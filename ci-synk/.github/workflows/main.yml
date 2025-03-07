@@ -1,8 +1,12 @@
 name: CI with Snyk
 
-on: 
+on:
   push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 
 jobs:
   security:
