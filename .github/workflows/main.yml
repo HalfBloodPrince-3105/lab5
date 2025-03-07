@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
+        node-version: [18]  # Updated to latest stable LTS version
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -39,17 +39,23 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies
-        run: |
-          npm install  # No more cd lab5, since package.json is in LABS/
+      - name: Upgrade npm
+        run: npm install -g npm@latest  # Fixes package-lock.json issues
+
+      - name: Install required dependencies
+        run: npm install sass --save-dev  # Fixes SASS errors
+
+      - name: Install project dependencies
+        run: npm install
+
+      - name: Fix security vulnerabilities
+        run: npm audit fix --force
 
       - name: Build the project
-        run: |
-          npm run build --if-present  # No more cd lab5
+        run: npm run build --if-present
 
       - name: Run tests
-        run: |
-          npm test  # No more cd lab5
+        run: npm test
 
   publish:
     needs: [security, build]
@@ -67,8 +73,11 @@ jobs:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Upgrade npm
+        run: npm install -g npm@latest  # Ensures npm is updated for publishing
+
       - name: Install dependencies
-        run: npm install  # No more cd lab5
+        run: npm install
 
       - name: Publish
         run: npm publish
