@@ -49,8 +49,9 @@ jobs:
       - name: Install project dependencies
         run: npm install
 
-      - name: Fix security vulnerabilities
-        run: npm audit fix --force || true  # Don't fail if vulnerabilities can't be fixed
+      - name: Fix security vulnerabilities (skip for Node 15 & 18)
+        if: matrix.node-version < 15
+        run: npm audit fix --only=prod || echo "Continuing despite audit issues"
 
       - name: Build the project
         run: npm run build --if-present
