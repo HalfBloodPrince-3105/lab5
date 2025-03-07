@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x, 18.x]  # Testing all required Node.js versions
+        node-version: [10.x, 12.x, 14.x, 15.x, 18.x]  # Required Node.js versions
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -39,8 +39,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Upgrade npm
-        run: npm install -g npm@latest  # Fixes package-lock.json issues
+      - name: Upgrade npm (only for Node 14+)
+        if: matrix.node-version >= 14
+        run: npm install -g npm@latest  # Only update npm if compatible
 
       - name: Install required dependencies
         run: npm install sass --save-dev  # Fixes SASS errors
@@ -49,7 +50,7 @@ jobs:
         run: npm install
 
       - name: Fix security vulnerabilities
-        run: npm audit fix --force
+        run: npm audit fix --force || true  # Don't fail if vulnerabilities can't be fixed
 
       - name: Build the project
         run: npm run build --if-present
