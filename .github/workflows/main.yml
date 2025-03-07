@@ -8,7 +8,9 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         env:
@@ -34,16 +36,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        working-directory: lab5  # Change this if your package.json is in a different directory
         run: npm ci
+        working-directory: lab5  # Change if needed
 
       - name: Build the project
-        working-directory: lab5  # Ensure it runs in the correct directory
         run: npm run build --if-present
+        working-directory: lab5  # Change if needed
 
       - name: Run tests
-        working-directory: lab5  # Ensure tests run in the correct directory
         run: npm test
+        working-directory: lab5  # Change if needed
 
   publish:
     needs: [security, build]
@@ -62,11 +64,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        working-directory: lab5  # Change this if necessary
         run: npm ci
+        working-directory: lab5  # Change if needed
 
       - name: Publish
-        working-directory: lab5  # Ensure npm publishes from the correct directory
         run: npm publish
+        working-directory: lab5  # Change if needed
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
