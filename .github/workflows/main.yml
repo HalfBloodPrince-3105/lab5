@@ -36,16 +36,19 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm ci
-        working-directory: lab5  # Change this if needed
+        run: |
+          if [ -d "lab5" ]; then cd lab5; fi
+          npm ci
 
       - name: Build the project
-        run: npm run build --if-present
-        working-directory: lab5  # Change this if needed
+        run: |
+          if [ -d "lab5" ]; then cd lab5; fi
+          npm run build --if-present
 
       - name: Run tests
-        run: npm test
-        working-directory: lab5  # Change this if needed
+        run: |
+          if [ -d "lab5" ]; then cd lab5; fi
+          npm test
 
   publish:
     needs: [security, build]
@@ -64,11 +67,13 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: npm ci
-        working-directory: lab5  # Change this if needed
+        run: |
+          if [ -d "lab5" ]; then cd lab5; fi
+          npm ci
 
       - name: Publish
-        run: npm publish
-        working-directory: lab5  # Change this if needed
+        run: |
+          if [ -d "lab5" ]; then cd lab5; fi
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
