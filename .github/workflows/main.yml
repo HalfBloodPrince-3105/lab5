@@ -37,18 +37,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [ -d "lab5" ]; then cd lab5; fi
-          npm ci
+          npm install  # No more cd lab5, since package.json is in LABS/
 
       - name: Build the project
         run: |
-          if [ -d "lab5" ]; then cd lab5; fi
-          npm run build --if-present
+          npm run build --if-present  # No more cd lab5
 
       - name: Run tests
         run: |
-          if [ -d "lab5" ]; then cd lab5; fi
-          npm test
+          npm test  # No more cd lab5
 
   publish:
     needs: [security, build]
@@ -67,13 +64,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: |
-          if [ -d "lab5" ]; then cd lab5; fi
-          npm ci
+        run: npm install  # No more cd lab5
 
       - name: Publish
-        run: |
-          if [ -d "lab5" ]; then cd lab5; fi
-          npm publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
